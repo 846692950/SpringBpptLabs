@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--status：用于设置日志内部状态消息的打印级别-->
+<!--monitorInterval：每 5 秒钟就会检查一次配置文件是否有更改，如果有更改，它将自动重新加载配置-->
+<Configuration status="info" monitorInterval="5">
+    <!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+    <!--自定义变量值-->
+    <Properties>
+        <!--日志的级别参数-->
+        <Property name="LOG_INFO_LEVEL" value="info"/>
+        <Property name="LOG_ERROR_LEVEL" value="error"/>
+        <Property name="LOG_DEBUG_LEVEL" value="debug"/>
+        <Property name="LOG_WARN_LEVEL" value="warn"/>
+        <Property name="LOG_FATAL_LEVEL" value="fatal"/>
+        <!--max 属性指定了在滚动期间要保留的最大日志文件数-->
+        <Property name="LOG_FILES" value="20"/>
+        <Property name="LOG_MAX_SIZE" value="100MB"/>
+        <Property name="TIME_BASED_INTERVAL" value="1"/>
+        <!--日志输出格式-->
+        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}:%4p %t (%F:%L) - %m%n"/>
+        <!--日志输出路径-->
+        <property name="FILE_PATH" value="D:\logs"/>
+    </Properties>
+
+    <Appenders>
+        <!--输出控制台日志的配置-->
+        <!--SYSTEM_OUT输出黑色，SYSTEM_ERR输出红色-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- 输出日志的格式 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- info级别日志文件输出 -->
+        <RollingFile name="info">
+            <!--此属性指定了当前正在写入的日志文件的名称-->
+            <fileName>${FILE_PATH}/info.log</fileName>
+            <!--此属性定义了当发生滚动时新日志文件的命名模式-->
+            <filePattern>${FILE_PATH}/info_%i.log.%d{yyyy-MM-dd}</filePattern>
+            <!-- 过滤器 -->
+            <Filters>
+                <!--onMatch：在之上包括自己（>=），onMismatch：不在之上(<)-->
+                <!--ACCEPT：匹配，DENY：拒绝，NEUTRAL：中立-->
+                <!--只输出info，warn以上拒绝，以下保持中立，info以上接受，以下拒绝 -->
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <!--日志输出格 -->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <!--策略-->
+            <Policies>
+                <!--每隔一天转存-->
+                <TimeBasedTriggeringPolicy interval="${TIME_BASED_INTERVAL}"/>
+                <!--文件大小-->
+                <SizeBasedTriggeringPolicy size="${LOG_MAX_SIZE}"/>
+            </Policies>
+            <!--max 属性指定了在滚动期间要保留的最大日志文件数-->
+            <DefaultRolloverStrategy max="${LOG_FILES}"/>
+        </RollingFile>
+
+        <!-- error级别日志文件输出 -->
+        <RollingFile name="error">
+            <!--此属性指定了当前正在写入的日志文件的名称-->
+            <fileName>${FILE_PATH}/error.log</fileName>
+            <!--此属性定义了当发生滚动时新日志文件的命名模式-->
+            <filePattern>${FILE_PATH}/error_%i.log.%d{yyyy-MM-dd}</filePattern>
+            <!-- 过滤器 -->
+            <Filters>
+                <!--onMatch：在之上包括自己（>=），onMismatch：不在之上(<)-->
+                <!--ACCEPT：匹配，DENY：拒绝，NEUTRAL：中立-->
+                <!--只输出error，fatal以上拒绝，以下保持中立，error以上接受，以下拒绝 -->
+                <ThresholdFilter level="fatal" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <!--日志输出格式-->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!--每隔一天转存-->
+                <TimeBasedTriggeringPolicy interval="${TIME_BASED_INTERVAL}"/>
+                <!--文件大小-->
+                <SizeBasedTriggeringPolicy size="${LOG_MAX_SIZE}"/>
+            </Policies>
+            <!--max 属性指定了在滚动期间要保留的最大日志文件数-->
+            <DefaultRolloverStrategy max="${LOG_FILES}"/>
+        </RollingFile>
+
+        <!--debug级别日志文件输出-->
+        <RollingFile name="debug">
+            <!--此属性指定了当前正在写入的日志文件的名称-->
+            <fileName>${FILE_PATH}/debug.log</fileName>
+            <!--此属性定义了当发生滚动时新日志文件的命名模式-->
+            <filePattern>${FILE_PATH}/debug_%i.log.%d{yyyy-MM-dd}</filePattern>
+            <!--过滤器-->
+            <Filters>
+                <!--onMatch：在之上包括自己（>=），onMismatch：不在之上(<)-->
+                <!--ACCEPT：匹配，DENY：拒绝，NEUTRAL：中立-->
+                <!--只输出debug，info以上拒绝，以下保持中立，debug以上接受，以下拒绝 -->
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <!--日志输出格式-->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <!--策略-->
+            <Policies>
+                <!--每隔一天转存-->
+                <TimeBasedTriggeringPolicy interval="${TIME_BASED_INTERVAL}"/>
+                <!--文件大小-->
+                <SizeBasedTriggeringPolicy size="${LOG_MAX_SIZE}"/>
+            </Policies>
+            <!--max 属性指定了在滚动期间要保留的最大日志文件数-->
+            <DefaultRolloverStrategy max="${LOG_FILES}"/>
+        </RollingFile>
+    </Appenders>
+
+    <!--additivity="false"：设置事件是否在root logger输出，为了避免重复输出设置为”false”-->
+    <Loggers additivity="false">
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="debug"/>
+            <AppenderRef ref="info"/>
+            <AppenderRef ref="error"/>
+        </Root>
+    </Loggers>
+</Configuration>

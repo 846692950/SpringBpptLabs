@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://43.142.106.101:3306/sss?characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+mybatis-plus:
+  # 指定 Mapper XML 文件的位置，使用 classpath 通配符指定路径
+  mapper-locations: classpath:/mapper/**/*.xml
+  # 指定实体类的包路径，用于自动扫描并注册类型别名
+  type-aliases-package: mybatisplus
+  global-config:
+    db-config:
+      id-type: input
+      # 驼峰下划线转换（将数据库字段的下划线命名规则转换为 Java 实体类属性的驼峰命名规则）
+      db-column-underline: true
+      # 刷新 mapper
+      refresh-mapper: true
+      # 逻辑删及设置默认值（deleted字段是数据库自定义字段）
+      # logic-delete-field: deleted
+      # logic-not-delete-value: 0
+      # logic-delete-value: 1
+  configuration:
+    # 将 Java 实体类属性的驼峰命名规则转换为数据库字段的下划线命名规则
+    map-underscore-to-camel-case: true
+    # 查询结果中包含空值的列，在映射的时候，不会映射这个字段
+    call-setters-on-nulls: true
+    # 开启 sql 日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 关闭 sql 日志
+    # log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl

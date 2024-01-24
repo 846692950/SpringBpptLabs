@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--spirng boot 默认使用 logback，默认会读取 resources 文件夹下的名为 logback.xml 的文件-->
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true-->
+<!--scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒，默认的时间间隔为1分钟-->
+<!--debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态，默认值为false-->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!--指定日志文件路径（与当前程序jar包同一目录下）-->
+    <property name="LOG_HOME" value="./logs"/>
+    <property name="INFO_NAME" value="info"/>
+    <property name="DEBUG_NAME" value="debug"/>
+    <property name="ERROR_NAME" value="error"/>
+
+    <!--日志输出格式-->
+    <!--%d：表示日期时间-->
+    <!--%thread：表示线程名-->
+    <!--%-5level：级别从左显示5个字符宽度-->
+    <!--%logger{50}：表示logger名字最长50个字符，否则按照句点分割-->
+    <!--%msg：日志消息-->
+    <!--%n：是换行符-->
+    <property name="FORMAT" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} - %msg%n"/>
+
+    <!--控制台输出-->
+    <!-- ch.qos.logback.core.ConsoleAppender 表示控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FORMAT}</pattern>
+            <!-- 设置字符集 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!--"DEBUG"-->
+    <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--指定日志文件的当前路径，使用LOG_HOME环境变量来确定日志的根目录-->
+        <file>${LOG_HOME}/${DEBUG_NAME}.log</file>
+        <!--当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名-->
+        <!--TimeBasedRollingPolicy：最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--此属性定义了当发生滚动时新日志文件的命名模式-->
+            <FileNamePattern>${LOG_HOME}/debug/debug.log.%d{yyyy-MM-dd}_%i</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>7</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!--设置单个日志文件的最大大小，超过了就换新文件-->
+                <MaxFileSize>1024MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <!--格式化输出 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FORMAT}</pattern>
+        </encoder>
+        <!--日志级别过滤器-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--只接受 DEBUG 级别的日志-->
+            <level>DEBUG</level>
+            <!--如果是 DEBUG 级别，则接受-->
+            <onMatch>ACCEPT</onMatch>
+            <!--如果不是 DEBUG 级别，则拒绝-->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--"ERROR"-->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--指定日志文件的当前路径，使用LOG_HOME环境变量来确定日志的根目录-->
+        <file>${LOG_HOME}/${ERROR_NAME}.log</file>
+        <!--当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名-->
+        <!--TimeBasedRollingPolicy：最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--此属性定义了当发生滚动时新日志文件的命名模式-->
+            <FileNamePattern>${LOG_HOME}/error/error.log.%d{yyyy-MM-dd}_%i</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>15</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!--设置单个日志文件的最大大小-->
+                <MaxFileSize>1024MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <!--格式化输出 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FORMAT}</pattern>
+        </encoder>
+        <!--日志级别过滤器-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--只接受 ERROR 级别的日志-->
+            <level>ERROR</level>
+            <!--如果是 ERROR 级别，则接受-->
+            <onMatch>ACCEPT</onMatch>
+            <!--如果不是 ERROR 级别，则拒绝-->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--"INFO"-->
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--指定日志文件的当前路径，使用LOG_HOME环境变量来确定日志的根目录-->
+        <file>${LOG_HOME}/${INFO_NAME}.log</file>
+        <!--当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名-->
+        <!--TimeBasedRollingPolicy：最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--此属性定义了当发生滚动时新日志文件的命名模式-->
+            <FileNamePattern>${LOG_HOME}/info/info.log.%d{yyyy-MM-dd}_%i</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>7</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!--设置单个日志文件的最大大小-->
+                <MaxFileSize>1024MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <!--格式化输出 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FORMAT}</pattern>
+        </encoder>
+        <!--日志级别过滤器-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!--只接受 INFO 级别的日志-->
+            <level>INFO</level>
+            <!--如果是 INFO 级别，则接受-->
+            <onMatch>ACCEPT</onMatch>
+            <!--如果不是 INFO 级别，则拒绝-->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 日志输出级别: application.yml 中的配置会覆盖 logback-spring.xml 中的配置-->
+    <!-- 打印DEBUG级别日志及以上级别日志 -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="DEBUG"/>
+        <appender-ref ref="ERROR"/>
+        <appender-ref ref="INFO"/>
+    </root>
+
+    <!--开发环境:打印控制台-->
+    <springProfile name="dev">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!--生产环境:输出到文件-->
+    <springProfile name="uat">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="DEBUG"/>
+            <appender-ref ref="ERROR"/>
+            <appender-ref ref="INFO"/>
+        </root>
+    </springProfile>
+</configuration>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- pom模板版本 -->
+    <modelVersion>4.0.0</modelVersion>
+    <!--父工程信息-->
+    <parent>
+        <artifactId>springboot-lab</artifactId>
+        <groupId>ypw.example</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <!--基本信息-->
+    <artifactId>log</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>log</name>
+    <description>log</description>
+    <!--一依赖管理设置对应jar包版本 -->
+    <dependencies>
+        <!-- 引入log4j2依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <!--springboot启动类依赖-->
+        <!--spring-boot-starter-web 包含了 spring-boot-starter，如果这两个都引入了，需要都进行log排除-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <!--排除spring boot默认日志logback-->
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+</project>

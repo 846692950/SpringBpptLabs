@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- pom模板版本 -->
+    <modelVersion>4.0.0</modelVersion>
+    <!--父工程信息-->
+    <parent>
+        <artifactId>springboot-lab</artifactId>
+        <groupId>ypw.example</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <!--基本信息-->
+    <artifactId>mysql</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>mysql</name>
+    <description>mysql</description>
+    <!--一依赖管理设置对应jar包版本 -->
+    <dependencies>
+        <!--MySQL驱动-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <!--jdbc连接数据库-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <!--druid数据源依赖-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.21</version>
+        </dependency>
+    </dependencies>
+</project>

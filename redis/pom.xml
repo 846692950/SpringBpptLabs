@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- pom模板版本 -->
+    <modelVersion>4.0.0</modelVersion>
+    <!--父工程信息-->
+    <parent>
+        <artifactId>springboot-lab</artifactId>
+        <groupId>ypw.example</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <!--基本信息-->
+    <artifactId>redis</artifactId>
+    <name>redis</name>
+    <description>redis</description>
+    <version>0.0.1-SNAPSHOT</version>
+    <!--一依赖管理设置对应jar包版本 -->
+    <dependencies>
+        <!--springBoot集成redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>2.6.6</version>
+        </dependency>
+        <!--redisson-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.20.1</version>
+        </dependency>
+        <!--springboot AOP-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!--Alibaba FastJSON库，提供了高性能、灵活、可靠的JSON序列化和反序列化功能-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.75</version>
+        </dependency>
+    </dependencies>
+</project>

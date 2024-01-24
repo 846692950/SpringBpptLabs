@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+# 日志配置
+logging:
+  config:
+   classpath:log4j2-spring.xml # 自定义的xml配置文件名称
+
+
+
+
