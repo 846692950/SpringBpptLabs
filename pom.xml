@@ -25,6 +25,7 @@
         <module>swagger</module>
         <module>log</module>
         <module>redis</module>
+        <module>rabbit-mq</module>
     </modules>
     <!--设置jar包版本属性-->
     <properties>

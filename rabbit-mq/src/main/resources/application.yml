@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  # 配置rabbitMq 服务器
+  rabbitmq:
+    host: 43.142.106.101  # ip
+    port: 5672            # 端口
+    username: guest       # 账号
+    password: guest       # 密码
+    publisher-confirm-type: correlated # 发布确认机制，消息从生产者发送到交换机后触发异步回调方法
+    publisher-returns: true # 开启 publisher return 机制
+    connection-timeout: 1s # 设置MQ的连接超时时间
+    listener:
+      simple:
+        concurrency: 10 # 消费者数量
+        max-concurrency: 10 # 最大消费者数量
+        prefetch: 1 # 限流（消费者每次从队列获取的消息数量，处理快的机器多处理）
+        acknowledge-mode: manual # 开启ACK手动确认机制
+        retry:
+          enabled: true # 开启消费者失败重试
+          initial-interval: 1000ms # 消息重试的初始间隔时间为 1 秒
+          multiplier: 1 # 失败的等待时长倍数，下次等待时长 = multiplier * last-interval
+          max-attempts: 3 # 最大重试次数
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- pom模板版本 -->
+    <modelVersion>4.0.0</modelVersion>
+    <!--父工程信息-->
+    <parent>
+        <artifactId>springboot-lab</artifactId>
+        <groupId>ypw.example</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <!--基本信息-->
+    <artifactId>rabbit-mq</artifactId>
+    <name>rabbit-mq</name>
+    <description>rabbit-mq</description>
+    <version>0.0.1-SNAPSHOT</version>
+    <!--一依赖管理设置对应jar包版本 -->
+    <dependencies>
+        <!--AMQP是一种协议，用于通过消息队列进行异步通信-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <!--amqp-client库提供了与RabbitMQ服务器交互所需的Java客户端API-->
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+        </dependency>
+        <!--Jackson-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+</project>
