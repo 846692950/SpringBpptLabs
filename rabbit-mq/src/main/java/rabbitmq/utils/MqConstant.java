@@ -1,4 +1,4 @@
-package rabbitmq.util;
+package rabbitmq.utils;
 
 /**
  * 常量类

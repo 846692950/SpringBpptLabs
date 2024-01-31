@@ -4,7 +4,7 @@ import com.rabbitmq.client.CancelCallback;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DeliverCallback;
-import rabbitmq.util.MQConnectionUtil;
+import rabbitmq.utils.MQConnectionUtil;
 
 /**
  * 消息接收者

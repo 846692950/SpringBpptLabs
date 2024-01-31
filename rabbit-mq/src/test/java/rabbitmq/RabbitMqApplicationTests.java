@@ -6,7 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.concurrent.ListenableFutureCallback;
-import rabbitmq.util.MqConstant;
+import rabbitmq.utils.MqConstant;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -18,7 +18,12 @@
     <!--%logger{50}：表示logger名字最长50个字符，否则按照句点分割-->
     <!--%msg：日志消息-->
     <!--%n：是换行符-->
-    <property name="FORMAT" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{20} - %msg%n"/>
+
+    <!--普通字体日志-->
+    <property name="FORMAT" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level] %logger{20} - %msg%n"/>
+    <!--彩色字体日志-->
+    <property name="COLOUR_FORMAT"
+              value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight([%-5level]) %magenta([%thread]) %cyan(%logger{36}) - %msg%n"/>
 
     <!--控制台输出-->
     <!-- ch.qos.logback.core.ConsoleAppender 表示控制台输出 -->
@@ -28,7 +33,7 @@
             <level>debug</level>
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${FORMAT}</pattern>
+            <pattern>${COLOUR_FORMAT}</pattern>
             <!-- 设置字符集 -->
             <charset>UTF-8</charset>
         </encoder>

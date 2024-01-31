@@ -1,8 +1,8 @@
 package rabbitmq.example;
 
 import com.rabbitmq.client.*;
-import rabbitmq.util.MQConnectionUtil;
-import rabbitmq.util.MqConstant;
+import rabbitmq.utils.MQConnectionUtil;
+import rabbitmq.utils.MqConstant;
 
 import java.util.HashMap;
 import java.util.Map;
