@@ -4,21 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <!-- pom模板版本 -->
     <modelVersion>4.0.0</modelVersion>
-    <!--父类信息-->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.4</version>
-        <relativePath/><!--从存储库查找父级-->
-    </parent>
     <!--基本信息-->
     <groupId>ypw.example</groupId>
     <artifactId>springboot-lab</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>springboot-lab</name>
     <description>springboot-lab</description>
+    <packaging>pom</packaging><!--父工程的pom文件,打包方式为pom-->
     <!--子模块 -->
-    <packaging>pom</packaging>
     <modules>
         <module>mysql</module>
         <module>mybatis-plus</module>
@@ -33,6 +26,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+    <!--子模块继承之后作用：锁定版本 + 子 module 不用写 groupId 和 version-->
+    <dependencyManagement>
+        <dependencies>
+            <!--spring boot 版本控制-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>2.5.4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <!--公共引入的jar，子工程会直接引入对应的jar-->
     <dependencies>
         <!--lombok插件依赖-->

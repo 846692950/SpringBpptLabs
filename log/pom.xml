@@ -16,10 +16,6 @@
     <description>log</description>
     <!--一依赖管理设置对应jar包版本 -->
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <!-- 引入log4j2依赖 -->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
