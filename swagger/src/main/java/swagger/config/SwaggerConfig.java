@@ -2,6 +2,7 @@ package swagger.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -9,7 +10,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+//import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * 老版本 swagger-ui 访问地址：http://localhost:8080/swagger-ui.html
@@ -25,23 +26,31 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @ApiOperation(value = "删除数据", notes = "根据id删除用户数据") --> 方法注解
  * @ApiImplicitParam(name = "id", value = "用户id", required = true) --> 参数注解
  * ----------------------------------------------------------------------
+ * 方法相关注解：
  * @ApiImplicitParams({ --> 对象参数注解
  *         @ApiImplicitParam(name = "username", value = "用户名", required = true), --> 对象字段注解
  *         @ApiImplicitParam(name = "password", value = "用户密码", required = true) --> 对象字段注解
  * })
  * public ResponseResult putUserInfo(UserInfo userInfo){}
  */
-@Configuration
-@EnableSwagger2
+//@Configuration
+//@EnableSwagger2
 public class SwaggerConfig {
     @Bean
     public Docket webApiConfig() {
         // 创建一个 swagger 的 bean 实例
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(webApiInfo()) // 指定构建 api 文档详细信息的方法
-                .select() // 设置扫描接口
-                .apis(RequestHandlerSelectors.basePackage("swagger.controller")) // 指定构建 api 接口的包路径,.any()为所有包
-                .paths(PathSelectors.any()) // 可根据 url 路径设置那些请求加入文档，忽略哪些请求
+                .select()
+                /*
+                    RequestHandlerSelectors 配置如何扫描接口
+                    any()：全部扫描（项目中的所有接口）
+                    none()：不扫描
+                    basePackage：扫描指定包下的接口
+                    withClassAnnotation：扫描带有指定注解的类
+                    withMethodAnnotation：扫描带有指定注解的方法
+                */
+                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))//扫描RestController修饰的所有类
                 .build();
     }
 
@@ -53,9 +62,9 @@ public class SwaggerConfig {
                 .description("本文档描述接口测试用例") // 接口描述
                 .version("1.0")  // 版本
                 .contact(new Contact("岳培文", "www.baidu.com", "846692950@qq.com")) // 联系人-网址-邮箱
-                .license("百度") // 证书描述
-                .licenseUrl("www.baidu.com") // 证书地址
-                .termsOfServiceUrl("www.baidu.com") // 系统服务网址
+                .license("百度") // 许可
+                .licenseUrl("www.baidu.com") // 许可链接
+                .termsOfServiceUrl("www.baidu.com") // 组织链接
                 .build();
     }
 

@@ -1,6 +1,22 @@
 server:
   port: 8080
 
+knife4j:
+  enable: true
+  openapi:
+    title: swagger-knife4j 框架文档
+    description: "swagger-knife4j 框架测试文档"
+    email: 846692950@qq.com
+    concat: ypw
+    url: https://www.baidu.com
+    version: v1.0.0
+    group:
+      default:
+        group-name: default
+        api-rule: package
+        api-rule-resources:
+          - swagger.controller
+
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource

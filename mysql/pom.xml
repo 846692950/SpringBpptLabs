@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--suppress ALL -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <!-- pom模板版本 -->
@@ -11,9 +12,6 @@
     </parent>
     <!--基本信息-->
     <artifactId>mysql</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>mysql</name>
-    <description>mysql</description>
     <!--一依赖管理设置对应jar包版本 -->
     <dependencies>
         <!--MySQL驱动-->

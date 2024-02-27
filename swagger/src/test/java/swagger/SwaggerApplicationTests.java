@@ -3,6 +3,7 @@ package swagger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import swagger.entity.User;
 import swagger.mapper.UserMapper;
 import swagger.service.UserService;
 
