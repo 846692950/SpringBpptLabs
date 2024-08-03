@@ -11,8 +11,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class StableDiffusionWebUI {
     @SneakyThrows
@@ -23,7 +21,7 @@ public class StableDiffusionWebUI {
                 getUrl();
                 break;
             case 2:
-                getCheckUrl();
+                getAvailableUrl();
                 break;
             default:
                 System.out.println("请输入正确的值！");
@@ -61,19 +59,13 @@ public class StableDiffusionWebUI {
             List<Callable<Void>> threads = new ArrayList<>();
             ExecutorService executor = Executors.newFixedThreadPool(size);
             for (int j = 0; j < size; j++) {
-                Lock lock = new ReentrantLock();
                 int smallThreeNum = j;
                 threads.add(() -> {
                     Thread thread = Thread.currentThread();
                     thread.setName("线程：" + smallThreeNum);
-                    try {
-                        lock.lock();
-                        List<String> urlList = groupList.get(smallThreeNum);
-                        for (String url : urlList) {
-                            checkUrl(url, writePath);
-                        }
-                    } finally {
-                        lock.unlock();
+                    List<String> urlList = groupList.get(smallThreeNum);
+                    for (String url : urlList) {
+                        checkUrl(url, writePath);
                     }
                     int threeNum = bigThreeNum + 1;
                     System.out.println("总线程<【[" + threeNum + "]->" + thread.getName() + "】" + ">执行结束！");
@@ -90,45 +82,6 @@ public class StableDiffusionWebUI {
             } finally {
                 System.out.println(" --、程序执行结束！--、");
             }
-        }
-    }
-
-    /**
-     * 获取能用的url并存入电脑桌面Stable_Diffusion_WebUI.txt
-     */
-    private static void getCheckUrl() {
-        String readFile = "sss.txt";
-        String writeFile = "Stable_Diffusion_WebUI.txt";
-        String readPath = System.getProperty("user.home") + "/Desktop/" + readFile;
-        String writePath = System.getProperty("user.home") + "/Desktop/" + writeFile;
-        //"-----------------------------------------------------------------"
-        List<String> list = readTxtFile(readPath);
-        List<List<String>> groupList = partition(list, START_THREED);
-        int size = groupList.size();
-        List<Callable<Void>> threads = new ArrayList<>();
-        ExecutorService executor = Executors.newFixedThreadPool(size);
-        //"-----------------------------------------------------------------"
-        for (int j = 0; j < size; j++) {
-            int smallThreeNum = j;
-            threads.add(() -> {
-                Thread thread = Thread.currentThread();
-                thread.setName("线程：" + smallThreeNum);
-                List<String> urlList = groupList.get(smallThreeNum);
-                for (String url : urlList) {
-                    checkUrl(url, writePath);
-                }
-                System.out.println("【" + thread.getName() + "】" + " 执行结束！\n");
-                return null;
-            });
-        }
-        try {
-            executor.invokeAll(threads);
-            executor.shutdown();
-            executor.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            System.out.println(" --、程序执行结束！--、");
         }
     }
 
@@ -155,30 +108,22 @@ public class StableDiffusionWebUI {
     }
 
     /**
-     * 检查传入的url地址是否有效，有效存入桌面Stable_Diffusion_WebUI.txt
+     * 检查传入的 url 地址是否有效
+     * 有效存入桌面 Stable_Diffusion_WebUI.txt
      *
-     * @param address
-     * @param writePath
+     * @param address   受检查的 url 地址
+     * @param writePath 过滤后数据写入的文档
      */
     private static void checkUrl(String address, String writePath) {
         try {
-            URL url = new URL(address + "/sdapi/v1/txt2img");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000); // 设置连接超时时间为 5 秒
-            connection.setReadTimeout(5000); // 设置读取超时时间为 5 秒
-            int responseCode = connection.getResponseCode();
-            if (responseCode != 405) {
-                return;
-            }
-            URL ur = new URL(address);
-            HttpURLConnection conn = (HttpURLConnection) ur.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setConnectTimeout(10000); // 设置连接超时时间为 10 秒
-            conn.setReadTimeout(10000); // 设置读取超时时间为 10 秒
-            int resCode = conn.getResponseCode();
+            URL url = new URL(address);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setConnectTimeout(5000); // 设置连接超时时间为 5 秒
+            httpURLConnection.setReadTimeout(5000); // 设置读取超时时间为 5 秒
+            int resCode = httpURLConnection.getResponseCode();
             if (resCode == 200) {
-                String response = getResponse(conn);
+                String response = getResponse(httpURLConnection);
                 if (response.contains("Stable Diffusion") && !response.contains("\"auth_required\":true")) {
                     writeData(address, writePath);
                 }
@@ -189,39 +134,110 @@ public class StableDiffusionWebUI {
     }
 
     /**
-     * 根据 connection 获取相应结果
+     * 获取 http 请求返回的结果字符串
      *
-     * @param connection
-     * @throws IOException
+     * @param connection HttpURLConnection 连接
+     * @return 请求返回的结果字符串
      */
-    private static String getResponse(HttpURLConnection connection) throws IOException {
-        try (InputStream inputStream = connection.getInputStream();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            StringBuilder response = new StringBuilder();
+    private static String getResponse(HttpURLConnection connection) {
+        InputStream inputStream = null;
+        BufferedReader reader = null;
+        StringBuilder response = new StringBuilder();
+        /*-----------------------------------------------------------------*/
+        try {
+            inputStream = connection.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = reader.readLine()) != null) {
                 response.append(line);
             }
-            return response.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            // 确保在退出方法前关闭资源
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return response.toString();
+    }
+
+    /**
+     * 把数据根写到指定位置
+     *
+     * @param data      要写的数据
+     * @param writePath 写入的地址
+     * @throws IOException
+     */
+    private static void writeData(String data, String writePath) {
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(writePath, true);
+            writer.write(data + "\n");
+            System.out.println("<" + data + "> 编号[" + number++ + "] 可以使用！\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     /**
-     * 把txt数据根写到指定位置
-     *
-     * @param address   要写的数据
-     * @param writePath 写入的地址
-     * @throws IOException
+     * 读取桌面 sss.txt
+     * 获取可以使用的 url
+     * 存入电脑桌面 Stable_Diffusion_WebUI.txt
      */
-    private static void writeData(String address, String writePath) throws IOException {
-        try (FileWriter writer = new FileWriter(writePath, true)) {
-            writer.write(address + "\n");
+    private static void getAvailableUrl() {
+        String readFile = "sss.txt";
+        String writeFile = "Stable_Diffusion_WebUI.txt";
+        String readPath = System.getProperty("user.home") + "/Desktop/" + readFile;
+        String writePath = System.getProperty("user.home") + "/Desktop/" + writeFile;
+        /*-----------------------------------------------------------------*/
+        List<String> list = readTxtFile(readPath);
+        List<List<String>> groupList = partition(list, START_THREED);
+        int size = groupList.size();
+        List<Callable<Void>> threads = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(size);
+        /*-----------------------------------------------------------------*/
+        for (int j = 0; j < size; j++) {
+            int smallThreeNum = j;
+            threads.add(() -> {
+                Thread thread = Thread.currentThread();
+                thread.setName("线程：" + smallThreeNum);
+                List<String> urlList = groupList.get(smallThreeNum);
+                for (String url : urlList) {
+                    checkUrl(url, writePath);
+                }
+                System.out.println("【" + thread.getName() + "】" + " 执行结束！\n");
+                return null;
+            });
         }
-        System.out.println("<" + address + "> 编号[" + number++ + "] 可以使用！\n");
-        File file = new File(writePath);
-        if (!file.exists()) {
-            file.createNewFile();
-            System.out.println("创建文件：" + writePath);
+        try {
+            executor.invokeAll(threads);
+            executor.shutdown();
+            executor.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            System.out.println(" --、程序执行结束！--、");
         }
     }
 
@@ -232,16 +248,27 @@ public class StableDiffusionWebUI {
      * @return List<String> 读取的数据集合
      */
     public static List<String> readTxtFile(String filePath) {
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                lines.add(line);
+        List<String> fileLines = new ArrayList<>();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String currentLine;
+            while ((currentLine = reader.readLine()) != null) {
+                fileLines.add(currentLine);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        return lines;
+        return fileLines;
     }
-
 }
+
+
